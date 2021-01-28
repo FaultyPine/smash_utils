@@ -46,11 +46,7 @@ pub fn get_fighter_information(module_accessor: &mut app::BattleObjectModuleAcce
     }
 }
 
-pub fn get_module_accessor(fighter_id: i32) -> *mut app::BattleObjectModuleAccessor {
-    let entry_id = app::FighterEntryID(fighter_id);
-    unsafe {
-        let fighter_entry = FighterManager::get_fighter_entry(get_fighter_manager().unwrap(), entry_id) as *mut app::FighterEntry;
-        let current_fighter_id = FighterEntry::current_fighter_id(fighter_entry);
-        app::sv_battle_object::module_accessor(current_fighter_id as u32)
-    }
+pub fn get_module_accessor(entry_id: i32) -> *mut app::BattleObjectModuleAccessor {
+    let module_accessor = &mut *sv_battle_object::module_accessor(Fighter::get_id_from_entry_id(entry_id));
+	return module_accessor;
 }
