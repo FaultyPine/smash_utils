@@ -1,5 +1,5 @@
 #![feature(proc_macro_hygiene)]
-#![feature(asm)]
+#![feature(llvm_asm)]
 
 #![allow(dead_code)]
 #![allow(unused_imports)]
@@ -9,6 +9,17 @@ mod debug;
 mod gameplay;
 
 use smash::{lib, app, phx, hash40};
+
+
+/// This function needs to get called from skyline::main
+pub unsafe fn init_smash_utils() {
+    skyline::nn::ro::LookupSymbol(
+        &mut FIGHTER_MANAGER_ADDR,
+        "_ZN3lib9SingletonIN3app14FighterManagerEE9instance_E\u{0}"
+            .as_bytes()
+            .as_ptr(),
+    );
+}
 
 pub const DEFAULT_VEC3: phx::Vector3f = phx::Vector3f {x: 0.0, y: 0.0, z: 0.0};
 pub static mut FIGHTER_MANAGER_ADDR: usize = 0;
@@ -57,15 +68,4 @@ pub unsafe fn sv_replace_status_func(l2c_agentbase: &lib::L2CAgent, status_kind:
     let x8: u64 = 0xb0 * status_kind + unk48;
     let x9: u64 = key << 32 >> 29;
     *((x8 + x9) as *mut u64) = func;
-}
-
-
-#[skyline::main(name = "smash_utils")]
-pub unsafe fn main() {
-    skyline::nn::ro::LookupSymbol(
-        &mut FIGHTER_MANAGER_ADDR,
-        "_ZN3lib9SingletonIN3app14FighterManagerEE9instance_E\u{0}"
-            .as_bytes()
-            .as_ptr(),
-    );
 }

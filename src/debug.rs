@@ -34,7 +34,7 @@ pub fn dump_trace() {
 fn get_lr() -> *const u64 {
     let r;
     unsafe {
-        asm!("mov $0, x30" : "=r"(r) : : : "volatile")
+        llvm_asm!("mov $0, x30" : "=r"(r) : : : "volatile")
     }
     r
 }
@@ -43,7 +43,7 @@ fn get_lr() -> *const u64 {
 fn get_fp() -> *const u64 {
     let r;
     unsafe {
-        asm!("mov $0, x29" : "=r"(r) : : : "volatile")
+        llvm_asm!("mov $0, x29" : "=r"(r) : : : "volatile")
     }
     r
 }
