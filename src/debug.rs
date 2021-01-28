@@ -1,5 +1,6 @@
 use skyline::hooks::{getRegionAddress, Region};
 use std::ptr::null;
+use crate::*;
 
 pub fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
     haystack.windows(needle.len()).position(|window| window == needle)
@@ -15,7 +16,7 @@ pub fn dump_trace() {
         let txt = getRegionAddress(Region::Text) as u64;
         println!("Current txt: {:#x}", txt);
 
-        let mut lr = get_lr();
+        let mut lr = get_lr!();
         let mut fp = get_fp();
 
         println!("Current LR: {:#x}", lr as u64);
@@ -30,13 +31,13 @@ pub fn dump_trace() {
     }
 }
 
-#[inline(always)]
-fn get_lr() -> *const u64 {
-    let r;
-    unsafe {
-        llvm_asm!("mov $0, x30" : "=r"(r) : : : "volatile")
-    }
-    r
+#[macro_export]
+macro_rules! get_lr {
+    () => {{
+        let r: *const u64;
+        llvm_asm!("mov $0, x30" : "=r"(r) ::: "volatile");
+        r
+    }};
 }
 
 #[inline(always)]
