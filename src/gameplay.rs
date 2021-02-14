@@ -47,6 +47,7 @@ pub fn get_fighter_information(module_accessor: &mut app::BattleObjectModuleAcce
 }
 
 pub fn get_module_accessor(entry_id: i32) -> *mut app::BattleObjectModuleAccessor {
-    let module_accessor = &mut *sv_battle_object::module_accessor(Fighter::get_id_from_entry_id(entry_id));
-	return module_accessor;
+    unsafe {
+        &mut *app::sv_battle_object::module_accessor(app::Fighter::get_id_from_entry_id(entry_id))
+    }
 }
