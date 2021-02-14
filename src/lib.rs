@@ -4,9 +4,9 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
-mod externs;
-mod debug;
-mod gameplay;
+pub mod externs;
+pub mod debug;
+pub mod gameplay;
 
 use smash::{lib, app, phx, hash40};
 
